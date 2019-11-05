@@ -11,38 +11,58 @@ const creepExtension = {
     },
     // 填充所有 spawn 和 extension
     fillSpawnEngry() { 
-        // 代码实现...
-        var targets = creep.room.find(FIND_STRUCTURES, {
+        this.say("填充Spawn和extension");
+        var targets = this.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => {
-                // STRUCTURE_EXTENSION
-                return (structure.structureType == STRUCTURE_EXTENSION) &&
+                return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) &&
                     structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
             }
         });
-
-        if(targets.length > 0) {
-            if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
+        if(targets) {
+            if(this.transfer(targets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                this.moveTo(targets, {visualizePathStyle: {stroke: '#ffffff'}});
             }
-        } else {}
+            return true;
+        } else {
+            return false;
+        }
 
     },
     // 填充所有 tower
     fillTower() {
-        // 代码实现...
+        this.say("填充Tower");
         var targets = this.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => {
-                // STRUCTURE_TOWER
                 return (structure.structureType == STRUCTURE_TOWER) &&
                     structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
             }
         });
-        if(targets.length > 0) {
-            if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
+        if(targets) {
+            if(this.transfer(targets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                this.moveTo(targets, {visualizePathStyle: {stroke: '#ffffff'}});
             }
+            return true;
         } else {
+            return false;
+        }
+    },
+    fillStructures() {
+        this.say("填充structures");
+        var targets = this.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter: (structure) => {
+                // 储存
+                return (structure.structureType == STRUCTURE_CONTAINER) &&
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+            }
+        });
 
+        if(targets) {
+            if(creep.transfer(targets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(targets, {visualizePathStyle: {stroke: '#ffffff'}});
+            }
+            return true;
+        } else {
+            return false;
         }
     },
     // 从Souorce中获取能量
@@ -80,34 +100,6 @@ const creepExtension = {
         } else {
             return false;
         }
-        // if(targets.length > 0) {
-        //     creep.say("从存储获取建造能量");
-        //     if(creep.withdraw(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        //         creep.moveTo(targets[0], {stroke: '#ffaa00'});
-        //     }
-        // } else {
-            
-        //     var sources = creep.room.find(FIND_SOURCES);
-        //     if(creep.harvest(sources[creep.memory.sourcesChoose]) == ERR_NOT_IN_RANGE) {
-        //         creep.moveTo(sources[creep.memory.sourcesChoose], {visualizePathStyle: {stroke: '#ffaa00'}});
-        //     }
-        // }    
-        // var targets = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
-
-        // console.log("builder:" + targets);
-        // //console.log("builder2:" + targets2);
-        // //console.log(targets);
-        // if(targets) {
-        //     creep.say("ok");
-        //     if(creep.build(targets) == ERR_NOT_IN_RANGE) {
-        //         creep.moveTo(targets, {visualizePathStyle: {stroke: '#ffffff'}});
-        //     }
-        // } else {
-        //     //console.log("builder noting");
-        //     creep.moveTo(Game.flags.Flag1.pos);
-        // } 
     }
 
-
-    // 其他更多自定义拓展
 }
