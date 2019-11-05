@@ -16,8 +16,7 @@ var roleHarvester = {
         else {
 
             if(!creep.fillContainer(Creep.prototype.target_id)) {
-                //creep.say("找不到Structures");
-                creep.fillStorages();
+                //creep.fillStorages();
             }
         }
     }

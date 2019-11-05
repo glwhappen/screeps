@@ -34,7 +34,7 @@ const creepExtension = {
         var targets = this.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => {
                 return (structure.structureType == STRUCTURE_TOWER) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) >= this.store.getUsedCapacity();
             }
         });
         if(targets) {
@@ -48,9 +48,9 @@ const creepExtension = {
     },
     
     fillStructureById(id) {
+        this.say("填充升级罐子");
         var targets = Game.getObjectById(id);
-
-        if(targets) {
+        if(targets && targets.store.getFreeCapacity(RESOURCE_ENERGY) >= this.store.getUsedCapacity()) {
             if(this.transfer(targets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 this.moveTo(targets, {visualizePathStyle: {stroke: '#ffffff'}});
             }
@@ -62,14 +62,14 @@ const creepExtension = {
     // 填充所有 container
     fillContainer(except) {
         console.log(except);
-        this.say("填充structures");
+        this.say("填充containers");
         var targets = this.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => {
                 // 储存
                  //Creep.prototype.target_id
 
                 return (structure.structureType == STRUCTURE_CONTAINER && structure.id != except) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) >= this.store.getUsedCapacity();
             }
         });
 
@@ -89,7 +89,7 @@ const creepExtension = {
             filter: (structure) => {
                 // 储存
                 return (structure.structureType == STRUCTURE_STORAGE) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) >= this.store.getUsedCapacity();
             }
         });
 
@@ -120,12 +120,13 @@ const creepExtension = {
             return false;
         }
     },
-    // 从structures获取能量
-    getEnergyFromContainer() {
-        this.say("获取能量");
+    // 从container获取能量
+    getEnergyFromContainer(except) {
+        this.say("能量container");
         var targets = this.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => {
-                return (structure.structureType == STRUCTURE_CONTAINER  && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0);
+                return (structure.structureType == STRUCTURE_CONTAINER && structure.id != except) 
+                && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0;
             }
         });
         if(targets) {

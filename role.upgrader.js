@@ -15,23 +15,9 @@ var roleUpgrader = {
             }
         }
         else {
-            //var choose= Game.time % 2;
-            if(false) {
-                var targets = creep.room.find(FIND_STRUCTURES, {
-                    filter: (structure) => {
-                        return (structure.structureType == STRUCTURE_CONTAINER);
-                    }
-                });
-                
-                if(targets.length > 0) {
-                    if(creep.withdraw(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(targets[0], {stroke: '#ffaa00'});
-                    }
-                }
-            } else {
-                if(!creep.getEnergyFromContainer()){
-                    creep.getEnergyFromSources();
-                }
+            if(!creep.getEnergyFromContainer()){
+                creep.getEnergyFromStorages();
+                //creep.getEnergyFromSources();
             }
         }
     }

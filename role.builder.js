@@ -42,7 +42,7 @@ var roleBuilder = {
                 }
             } else {
                 if(!creep.getEnergyFromContainer()) {
-                    creep.getEnergyFromSource();
+                    //creep.getEnergyFromSource();
                 }        
             }
         }
