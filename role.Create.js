@@ -63,7 +63,7 @@ module.exports.createHarvester = function() {
         // 精简部队，适合扩展为5 - 10的情况 550 - 800
         if(len < 1) {
             need = [WORK,WORK,CARRY,MOVE]; // 300
-        } else if(len < 4) {
+        } else if(len < 3) {
             if(tr) {
                 need = [WORK,WORK,WORK,WORK,CARRY,CARRY,MOVE]; // 550
             } else {

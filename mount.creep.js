@@ -46,6 +46,7 @@ const creepExtension = {
             return false;
         }
     },
+    // 填充所有 structures
     fillStructures() {
         this.say("填充structures");
         var targets = this.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -57,8 +58,8 @@ const creepExtension = {
         });
 
         if(targets) {
-            if(creep.transfer(targets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(targets, {visualizePathStyle: {stroke: '#ffffff'}});
+            if(this.transfer(targets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                this.moveTo(targets, {visualizePathStyle: {stroke: '#ffffff'}});
             }
             return true;
         } else {
@@ -68,7 +69,7 @@ const creepExtension = {
     // 从Souorce中获取能量
     getEnergyFromSource() {
         this.say("挖矿2");
-        var sources = this.pos.findClosestByRange(FIND_SOURCES, {
+        var sources = this.pos.findClosestByPath(FIND_SOURCES, {
             filter:(source) => {
                 return source.energy > 0;
             }
