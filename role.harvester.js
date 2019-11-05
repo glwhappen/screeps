@@ -11,7 +11,7 @@ var roleHarvester = {
         }
         
         if(!creep.memory.harvesting) {
-            // creep.say("挖矿");
+             creep.say("挖矿");
             // var sources = creep.room.find(FIND_SOURCES);
             // var sources2 = creep.pos.findClosestByRange(FIND_SOURCES);
             // //console.log(sources2.store.getFreeCapacity());
@@ -132,4 +132,3 @@ var roleHarvester = {
     }
 };
 
-module.exports = roleHarvester;
