@@ -46,7 +46,7 @@ var roleTransfer = {
             //         creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
             //     }
             // }     
-            creep.room.find(FIND_STRUCTURES,)
+
             var targets = creep.room.find(FIND_STRUCTURES, {
                 filter: (structure) => {
                     // STRUCTURE_EXTENSION

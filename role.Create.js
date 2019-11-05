@@ -262,7 +262,7 @@ module.exports.createTransfer = function() {
     //console.log('Spawn has '+extensions.length+' extensions available');
 
     if(tr || extensions.length >= 10) {
-        if(len < 1) {
+        if(len < 2) {
             if(extensions.length >= 20) {
                 need = [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE]; // 1050
             } else if(extensions.length >= 15) {

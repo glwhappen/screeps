@@ -29,32 +29,8 @@ var roleUpgrader = {
                     }
                 }
             } else {
-                var targets = creep.room.find(FIND_STRUCTURES, {
-                    filter: (structure) => {
-                        return (structure.structureType == STRUCTURE_CONTAINER  && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0);
-                    }
-                });
-                //console.log(targets[0].id);
-                var pos = 0;
-                for(var i = 0; i < targets.length; i++) {
-                    if(targets[i].id ==  Creep.prototype.target_id){
-                        pos = i;
-                        break;
-                    }
-                }
-                //console.log("pos" + pos);
-                if(targets.length > 0 && targets[pos].store.getUsedCapacity()) {
-                    creep.say("寻找存储资源");
-                    if(creep.withdraw(targets[pos], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(targets[pos], {stroke: '#ffaa00'});
-                    }
-                } else {
-                    creep.say("寻找矿物");
-                    var sources = creep.room.find(FIND_SOURCES);
-
-                    if(creep.harvest(sources[creep.memory.sourcesChoose]) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(sources[creep.memory.sourcesChoose], {visualizePathStyle: {stroke: '#ffaa00'}});
-                    }
+                if(!creep.getEnergyFromStructures()){
+                    creep.getEnergyFromSources();
                 }
             }
         }

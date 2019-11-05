@@ -16,7 +16,7 @@ module.exports.loop = function () {
     Creep.prototype.sourcesNum = Game.spawns['Spawn1'].room.find(FIND_SOURCES).length;
     if(Creep.prototype.allhistT == undefined) Creep.prototype.allhistT = 1;
     
-    Creep.prototype.wallhist = 20000; // 1M = 1000000
+    Creep.prototype.wallhist = 10000; // 1M = 1000000
     if(Game.time % 10)
         Creep.prototype.allhistT++;
     
@@ -71,7 +71,7 @@ module.exports.loop = function () {
     
     create.createTower();
     
-    //create.createBuilder();
+    create.createBuilder();
     create.createUpgrader();
     create.createTransfer();
     create.createHarvester();
