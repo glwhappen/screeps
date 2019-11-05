@@ -16,15 +16,9 @@ module.exports.loop = function () {
     Creep.prototype.sourcesNum = Game.spawns['Spawn1'].room.find(FIND_SOURCES).length;
     if(Creep.prototype.allhistT == undefined) Creep.prototype.allhistT = 1;
     
-    Creep.prototype.wallhist = 10000; // 1M = 1000000
+    Creep.prototype.wallhist = 20000; // 1M = 1000000
     if(Game.time % 10)
         Creep.prototype.allhistT++;
-    
-    // 给每种类型的creep增加一个id
-    if(Creep.prototype.builderId == undefined) Creep.prototype.builderId = 1;
-    if(Creep.prototype.harvesterId == undefined) Creep.prototype.harvesterId = 1;
-    if(Creep.prototype.builderId == undefined) Creep.prototype.builderId = 1;
-    if(Creep.prototype.transferId == undefined) Creep.prototype.transferId = 1;
     
     //console.log(Creep.prototype.harvesterId);
     //console.log(Game.time);
@@ -41,7 +35,8 @@ module.exports.loop = function () {
     // 清理缓存垃圾 并计算最小价值
     for(var name in Memory.creeps) {
         var creep = Game.creeps[name];
-        creep.getEnergyFromSource();
+        //creep.getEnergyFromSource();
+
         if(!Game.creeps[name]) {
             delete Memory.creeps[name];
             continue;

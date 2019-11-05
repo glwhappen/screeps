@@ -33,19 +33,27 @@ const creepExtension = {
     },
     // 从Souorce中获取资源
     getEnergyFromSource() {
-        this.say("挖矿!!!!!!!!!");
+        this.say("挖矿2");
         //var sources = creep.room.find(FIND_SOURCES);
-        var sources = creep.pos.findClosestByRange(FIND_SOURCES, {
-            filter:(structure) => {
-                return structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0;
+        var sources = this.pos.findClosestByRange(FIND_SOURCES, {
+            filter:(sources) => {
+                return sources.energy > 0;
             }
         });
         //console.log(sources2.store.getFreeCapacity());
-        console.log(sources);
+        //console.log("矿" + sources + sources.energy);
+        //this.say(sources == ERR_NOT_IN_RANGE);
+        if(sources) {
+            if(this.harvest(sources) == ERR_NOT_IN_RANGE) {
+                this.moveTo(sources, {visualizePathStyle: {stroke: '#ffaa00'}});
+            }
+        } else {
+            this.say("没有矿可以挖了");
+        }
 
-        // if(creep.harvest(sources[creep.memory.sourcesChoose]) == ERR_NOT_IN_RANGE) {
-        //     creep.moveTo(sources[creep.memory.sourcesChoose], {visualizePathStyle: {stroke: '#ffaa00'}});
-        // }
+        //  if(creep.harvest(sources == ERR_NOT_IN_RANGE) {
+        //      creep.moveTo(sources, {visualizePathStyle: {stroke: '#ffaa00'}});
+        //  }
     }
     // 其他更多自定义拓展
 }

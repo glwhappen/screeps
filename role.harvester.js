@@ -11,14 +11,16 @@ var roleHarvester = {
         }
         
         if(!creep.memory.harvesting) {
-            creep.say("挖矿");
-            var sources = creep.room.find(FIND_SOURCES);
-            var sources2 = creep.pos.findClosestByRange(FIND_SOURCES);
-            //console.log(sources2.store.getFreeCapacity());
+            // creep.say("挖矿");
+            // var sources = creep.room.find(FIND_SOURCES);
+            // var sources2 = creep.pos.findClosestByRange(FIND_SOURCES);
+            // //console.log(sources2.store.getFreeCapacity());
+            // console.log(sources[0]);
 
-            if(creep.harvest(sources[creep.memory.sourcesChoose]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[creep.memory.sourcesChoose], {visualizePathStyle: {stroke: '#ffaa00'}});
-            }
+            // if(creep.harvest(sources[creep.memory.sourcesChoose]) == ERR_NOT_IN_RANGE) {
+            //     creep.moveTo(sources[creep.memory.sourcesChoose], {visualizePathStyle: {stroke: '#ffaa00'}});
+            // }
+            creep.getEnergyFromSource();
         }
         else {
             //  为true 把采集的物品直接放入到罐子里
