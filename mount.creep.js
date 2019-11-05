@@ -46,13 +46,49 @@ const creepExtension = {
             return false;
         }
     },
-    // 填充所有 structures
-    fillStructures() {
+    
+    fillStructureById(id) {
+        var targets = Game.getObjectById(id);
+
+        if(targets) {
+            if(this.transfer(targets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                this.moveTo(targets, {visualizePathStyle: {stroke: '#ffffff'}});
+            }
+            return true;
+        } else {
+            return false;
+        }
+    },
+    // 填充所有 container
+    fillContainer(except) {
+        console.log(except);
         this.say("填充structures");
         var targets = this.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => {
                 // 储存
-                return (structure.structureType == STRUCTURE_CONTAINER) &&
+                 //Creep.prototype.target_id
+
+                return (structure.structureType == STRUCTURE_CONTAINER && structure.id != except) &&
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+            }
+        });
+
+        if(targets) {
+            if(this.transfer(targets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                this.moveTo(targets, {visualizePathStyle: {stroke: '#ffffff'}});
+            }
+            return true;
+        } else {
+            return false;
+        }
+    },
+    // 填充所有 storage
+    fillStorages() {
+        this.say("填充storage");
+        var targets = this.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter: (structure) => {
+                // 储存
+                return (structure.structureType == STRUCTURE_STORAGE) &&
                     structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
             }
         });
@@ -85,11 +121,28 @@ const creepExtension = {
         }
     },
     // 从structures获取能量
-    getEnergyFromStructures() {
-        this.say("获取能量2");
+    getEnergyFromContainer() {
+        this.say("获取能量");
         var targets = this.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => {
                 return (structure.structureType == STRUCTURE_CONTAINER  && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0);
+            }
+        });
+        if(targets) {
+            //this.say("成功获取能量");
+            if(this.withdraw(targets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                this.moveTo(targets, {visualizePathStyle: {stroke: '#ffaa00'}});
+            }
+            return true;
+        } else {
+            return false;
+        }
+    },
+    getEnergyFromStorages() {
+        this.say("能量Storages");
+        var targets = this.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return (structure.structureType == STRUCTURE_STORAGE  && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0);
             }
         });
         if(targets) {

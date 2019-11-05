@@ -11,7 +11,7 @@ var roleTransfer = {
         }
         //console.log(Creep.prototype.target_id);
         if(!creep.memory.transfing) {
-            creep.getEnergyFromStructures();
+            creep.getEnergyFromContainer();
         }
         else {
             if(!creep.fillSpawnEngry()) {
