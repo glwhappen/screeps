@@ -3,8 +3,10 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleTransfer = require('role.transfer');
 var create = require('role.Create');
+const mount = require('./mount')
 
 module.exports.loop = function () {
+    mount();
     //Creep.prototype.tower1 = 'bea3b81e02da92d';
     Creep.prototype.mode = 3; // 1 - 初始模式，快速发展
     Creep.prototype.transferOpen = false; // 如果为true，需要设置target_id, 为upgrade使用的容器
@@ -14,7 +16,7 @@ module.exports.loop = function () {
     Creep.prototype.sourcesNum = Game.spawns['Spawn1'].room.find(FIND_SOURCES).length;
     if(Creep.prototype.allhistT == undefined) Creep.prototype.allhistT = 1;
     
-    Creep.prototype.wallhist = 20000; // 1M = 1000000
+    Creep.prototype.wallhist = 10000; // 1M = 1000000
     if(Game.time % 10)
         Creep.prototype.allhistT++;
     
@@ -39,6 +41,7 @@ module.exports.loop = function () {
     // 清理缓存垃圾 并计算最小价值
     for(var name in Memory.creeps) {
         var creep = Game.creeps[name];
+        creep.getEnergyFromSource();
         if(!Game.creeps[name]) {
             delete Memory.creeps[name];
             continue;
