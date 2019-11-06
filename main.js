@@ -7,36 +7,38 @@ const mount = require('./mount')
 
 module.exports.loop = function () {
     mount();
+    
     //Creep.prototype.tower1 = 'bea3b81e02da92d';
     Creep.prototype.mode = 3; // 1 - 初始模式，快速发展
     Creep.prototype.transferOpen = false; // 如果为true，需要设置target_id, 为upgrade使用的容器
     Creep.prototype.target_id = '5db941eaa13adf340361f486';
-    Creep.prototype.towerSpeed = 1; // 数字越大，速度越慢
-    Creep.prototype.upgraderSpeed = 1; // 数字越大速度越慢，升级建筑
+    if(!global.configFlag) {
+        console.log("初始化全局config");
+        global.configFlag = true;
+        global.speedTower = 1; // 塔发射的速度
+        global.speedUpgrader = 1; // 升级的速度
+
+    }
+    console.log("speed:" + global.speedTower);
+
     Creep.prototype.sourcesNum = Game.spawns['Spawn1'].room.find(FIND_SOURCES).length;
     if(Creep.prototype.allhistT == undefined) Creep.prototype.allhistT = 1;
     
-    Creep.prototype.wallhist = 10000; // 1M = 1000000
-    if(Game.time % 10)
-        Creep.prototype.allhistT++;
-    
-    //console.log(Creep.prototype.harvesterId);
-    //console.log(Game.time);
+    Creep.prototype.wallhist = (Game.time - 12343942); // 1M = 1000000
+
+    console.log("Wallhist:" + (Game.time - 12343942) );
+
+
 
     var mode = Creep.prototype.mode;
     
-    //间隔一段时间打开安全模式
-    // if(Game.time % 40000 == 0) {
-    //     Game.spawns['Spawn1'].room.controller.activateSafeMode();
-    // }
+
     var sumValue = 0; // 记录当前价值的creep
     var cnt = 0;
 
     // 清理缓存垃圾 并计算最小价值
     for(var name in Memory.creeps) {
         var creep = Game.creeps[name];
-        //creep.getEnergyFromSource();
-
         if(!Game.creeps[name]) {
             delete Memory.creeps[name];
             continue;
@@ -51,8 +53,6 @@ module.exports.loop = function () {
         if(creep.memory.sourcesChoose == undefined) {
             creep.memory.sourcesChoose = Game.time % Creep.prototype.sourcesNum;
         }
-        //var sources = Game.creeps[name].room.find(FIND_SOURCES);
-        //Game.creeps[name].memory.beginTime = cnt % sources.length;
         sumValue += Game.creeps[name].memory.value;
     }
     sumValue /= cnt;
@@ -71,7 +71,13 @@ module.exports.loop = function () {
     
     create.createTower();
     
-    create.createBuilder();
+    if(Game.spawns['Spawn1'].room.find(FIND_CONSTRUCTION_SITES) != null) {
+        global.builderStatus = true;
+        create.createBuilder();
+    } else {
+        global.builderStatus = false;
+    }
+    
     create.createUpgrader();
     create.createTransfer();
     create.createHarvester();
@@ -82,7 +88,7 @@ module.exports.loop = function () {
         if(role == 'harvester') {
             roleHarvester.run(creep);
         } else if(role == 'upgrader') {
-            if(Game.time % Creep.prototype.upgraderSpeed  == 0){
+            if(Game.time % global.speedUpgrader  == 0){
                 roleUpgrader.run(creep);
             }
         } else if(role == 'builder') {

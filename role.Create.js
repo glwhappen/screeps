@@ -11,8 +11,27 @@ var getCnt = function(need){
     return ret;
 }
 
+var createCreep = function(body, data){
+    var need = [];
+    data.spawn = data.spawn ? data.spawn : "Spawn1";
+    var newName = data.role + Game.time;
+    for(var i in body){
+        for(var j = 0; j < body[i]; j++){
+            need.push(i);
+        }
+    }
+    console.log("need:" + need + " " + getCnt(need));
+    console.log(role);
+
+    if(Game.spawns[data.spawn].canCreateCreep(need) == 0) {
+        Game.spawns[data.spawn].spawnCreep(need, newName + "_" + getCnt(need), {memory: {role: role, value: getCnt(need), beginTime: Game.time}});
+    }  
+}
+
 // 创建harvester
 module.exports.createHarvester = function() {
+    //createCreep({WORK:2, MOVE:2}, "harvester");
+
     var tr = Creep.prototype.transferOpen;
     var mode = Creep.prototype.mode;
     var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
@@ -63,14 +82,14 @@ module.exports.createHarvester = function() {
         // 精简部队，适合扩展为5 - 10的情况 550 - 800
         if(len < 1) {
             need = [WORK,WORK,CARRY,MOVE]; // 300
-        } else if(len < 3) {
+        } else if(len < 2) {
             if(tr) {
                 need = [WORK,WORK,WORK,WORK,CARRY,CARRY,MOVE]; // 550
             } else {
                 if(extensions.length >= 11 && extensions.length < 15) {
                     need = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]; // 850
                 } else if(extensions.length >= 15) {
-                    need = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]; // 1050
+                    need = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,MOVE]; // 900
                 } else {
                     need = [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]; // 550
                 }
@@ -152,20 +171,10 @@ module.exports.createUpgrader = function(){
             }
         }
     } else if(mode == 3) {
-        // 精简部队，适合扩展为5 - 10的情况
-        if(len < 1) {
-            if(tr) {
-                need = [WORK,WORK,WORK,CARRY,WORK,MOVE]; // 500
-            } else {
-                need = [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE]; // 500
-            }
-        } else if(len < 2) {
-            if(tr) {
-                need = [WORK,WORK,WORK,WORK,CARRY,WORK,MOVE]; // 600
-            } else {
-                need = [WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE]; // 900
-            }
+        if(len < 2) {
+            need = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,MOVE]; // 700
         }
+
     } else if(mode == 4) {
         // 强化部队，适合扩展为15-20的情况 1050-
         if(len < 1) {
@@ -262,7 +271,7 @@ module.exports.createTransfer = function() {
     //console.log('Spawn has '+extensions.length+' extensions available');
 
     if(tr || extensions.length >= 10) {
-        if(len < 2) {
+        if(len < 1) {
             if(extensions.length >= 20) {
                 need = [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE]; // 1050
             } else if(extensions.length >= 15) {
@@ -291,7 +300,7 @@ module.exports.createTower = function() {
     if(targets.length > 0) {
         var tower = targets[0];
         if(tower) {
-            var closestDamagedStructure = tower.pos.findClosestByRange(Game.time % Creep.prototype.towerSpeed != 0 ? FIND_MY_STRUCTURES:FIND_STRUCTURES, {
+            var closestDamagedStructure = tower.pos.findClosestByRange(Game.time % global.speedTower != 0 ? FIND_MY_STRUCTURES:FIND_STRUCTURES, {
                 filter: (structure) => structure.structureType == "constructedWall" || structure.structureType == "rampart" ? structure.hits < Creep.prototype.wallhist : structure.hits < structure.hitsMax
             });
             if(closestDamagedStructure) {
@@ -306,7 +315,7 @@ module.exports.createTower = function() {
         }    
         var tower = targets[1];
         if(tower) {
-            var closestDamagedStructure = tower.pos.findClosestByRange(Game.time % Creep.prototype.towerSpeed != 0 ? FIND_MY_STRUCTURES:FIND_STRUCTURES, {
+            var closestDamagedStructure = tower.pos.findClosestByRange(Game.time % global.speedTower != 0 ? FIND_MY_STRUCTURES:FIND_STRUCTURES, {
                 filter: (structure) => structure.structureType == "constructedWall" || structure.structureType == "rampart" ? structure.hits < Creep.prototype.wallhist : structure.hits < structure.hitsMax
             });
             if(closestDamagedStructure) {

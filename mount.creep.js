@@ -9,6 +9,9 @@ const creepExtension = {
     checkEnemy() { 
         // 代码实现...
     },
+    checkBuild() {
+        this.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+    },
     // 填充所有 spawn 和 extension
     fillSpawnEngry() { 
         this.say("填充Spawn和extension");
