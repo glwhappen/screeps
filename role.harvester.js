@@ -15,9 +15,10 @@ var roleHarvester = {
         }
         else {
 
-            if(!creep.fillContainer(Creep.prototype.target_id)) {
+            if(!creep.fillContainer(Memory.container.upgrader)) {
+                // 不需要填充就会进来
                 if(!creep.fillSpawnEngry()) {
-                    if(global.containersUsedPercentage > 0.7 && !creep.fillStorages()) {
+                    if(Memory.containersUsedPercentage > 0.7 && !creep.fillStorages()) {
                         
                     }
                 }

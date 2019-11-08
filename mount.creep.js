@@ -158,6 +158,14 @@ const creepExtension = {
         } else {
             return false;
         }
+    },
+    wait(){
+        var role = this.memory.role;
+        //this.say("前往等候区");
+        //this.say(Memory.waitPos[role]);
+        //console.log(Memory.waitPos[role].x);
+
+        this.moveTo(Memory.waitPos[role]);
     }
 
 }

@@ -39,7 +39,7 @@ module.exports.createHarvester = function() {
     var role = 'harvester';
     var id = Creep.prototype[role + "Id"];
     var newName = role + Game.time;
-    var sourcesNum = Creep.prototype.sourcesNum;
+    
     var need = [];
     var extensions = Game.spawns['Spawn1'].room.find(FIND_MY_STRUCTURES, {
         filter: { structureType: STRUCTURE_EXTENSION }
@@ -146,7 +146,7 @@ module.exports.createUpgrader = function(){
     var role = 'upgrader';
     var id = Creep.prototype[role + "Id"];
     var newName = role + Game.time;
-    var sourcesNum = Creep.prototype.sourcesNum;
+    
     var need = [];
     if(mode == 1) {
         // 初级模式，快速发展，适合扩展为0的情况
@@ -199,7 +199,7 @@ module.exports.createBuilder = function(){
     var role = 'builder';
     var id = Creep.prototype[role + "Id"];
     var newName = role + Game.time;
-    var sourcesNum = Creep.prototype.sourcesNum;
+    
     var need = [];
     var extensions = Game.spawns['Spawn1'].room.find(FIND_MY_STRUCTURES, {
         filter: { structureType: STRUCTURE_EXTENSION }
@@ -262,7 +262,7 @@ module.exports.createTransfer = function() {
     var role = 'transfer';
     var id = Creep.prototype[role + "Id"];
     var newName = role + Game.time;
-    var sourcesNum = Creep.prototype.sourcesNum;
+    
     var need = [];
 
     var extensions = Game.spawns['Spawn1'].room.find(FIND_MY_STRUCTURES, {

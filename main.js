@@ -7,11 +7,23 @@ const mount = require('./mount')
 
 module.exports.loop = function () {
     mount();
+    /*******全局配置-开始 */
+    Creep.prototype.mode = 3; // 1 - 初始模式，快速发展
+    if(!global.configFlag) {
+        console.log("初始化全局config");
+        global.configFlag = true;
+        Memory.speed = {"tower":1, "upgrader":1};
+        Memory.hits = {"wall":40000};
+        Memory.container = {"upgrader":"5db941eaa13adf340361f486"};
+        Memory.sources = {"E29N36":['5bbcaea19099fc012e639581','5bbcaea19099fc012e639580']};
+        Memory.waitPos = {"builder":Game.flags.Flag1.pos, "transfer":Game.flags.Flag2.pos};
+        
+    }
+    Memory.has = {"build":Game.spawns['Spawn1'].room.find(FIND_CONSTRUCTION_SITES).length};
+    /********全局配置-结束 */
 
     if(!global.menuFlag){
         global.menuFlag = true;
-
-
         var formContent = "<table border='1' cellspacing='0'>";
         formContent += "<tr><td>名称</td><td>id</td><td>操作</td></tr>";
         for(var name in Memory.creeps){
@@ -20,19 +32,17 @@ module.exports.loop = function () {
                 formContent += "<tr>";
                 formContent += "<td> " + creep.name + " </td>";
                 formContent += "<td> " + creep.id + " </td>";
-                formContent +=  "<td><button style='color:#333'>操作</button></td>"
+                formContent +=  "<td><button style='color:#333' onclick='console.log(123)'>操作</button></td>"
                 formContent += "</tr>";
             }
         }
         //+ "<input type='button' value='按钮'></input>"
-        //+ "<input type='button' value='按钮'></input>"
+        //+ "<input type='button' value='按钮'></input>" //Game.creeps[" + creep.name + "].say(123)
         
         formContent += "</table>";
-
-
         console.log(formContent);
     }
-    
+    /**********计算当前container的容量占比 开始******* */
     var containers = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES, {
         filter: (structure) => {
             return (structure.structureType == STRUCTURE_CONTAINER);
@@ -43,41 +53,14 @@ module.exports.loop = function () {
     for(var i in containers) {
         containersUsedCapacity += containers[i].store.getUsedCapacity();
         containersCapacity += containers[i].store.getCapacity()
-       // console.log(containers[i] + " " + containers[i].store.getUsedCapacity());
     }
-    //console.log(containersUsedCapacity + " " + containersCapacity);
-    global.containersUsedPercentage = containersUsedCapacity / containersCapacity;
-    console.log(global.containersUsedPercentage);
-    if(global.containersUsedPercentage < 0.4){
-        global.speedUpgrader = 5;
-       // global.speedTower = 10;
+    Memory.containersUsedPercentage = containersUsedCapacity / containersCapacity;
+    if(Memory.containersUsedPercentage < 0.4){
+        Memory.speed.upgrader = 5;
     } else {
-        global.speedUpgrader = 1;
+        Memory.speed.upgrader = 1;
     }
-
-    //Creep.prototype.tower1 = 'bea3b81e02da92d';
-    Creep.prototype.mode = 3; // 1 - 初始模式，快速发展
-    Creep.prototype.transferOpen = false; // 如果为true，需要设置target_id, 为upgrade使用的容器
-    Creep.prototype.target_id = '5db941eaa13adf340361f486';
-    if(!global.configFlag) {
-        console.log("初始化全局config");
-        global.configFlag = true;
-        global.speedTower = 1; // 塔发射的速度
-        global.speedUpgrader = 1; // 升级的速度
-        
-        Memory.speed = {"tower":1, "upgrader":1};
-        Memory.hits = {"wall":40000};
-    }
-    console.log(Memory.speed.tower);
-    //console.log("speed:" + global.speedTower);
-
-    Creep.prototype.sourcesNum = Game.spawns['Spawn1'].room.find(FIND_SOURCES).length;
-    if(Creep.prototype.allhistT == undefined) Creep.prototype.allhistT = 1;
-    
-    Creep.prototype.wallhist = 40232; // 1M = 1000000
-
-    var sumValue = 0; // 记录当前价值的creep
-    var cnt = 0;
+    /**********计算当前container的容量占比 结束******* */
 
     // 清理缓存垃圾
     for(var name in Memory.creeps) {
@@ -85,6 +68,10 @@ module.exports.loop = function () {
             delete Memory.creeps[name];
             continue;
         } 
+        if(Game.creeps[name].ticksToLive <= 20) {
+            // 设置为死亡状态，把身上的能量存起来
+            Game.creeps[name].role = "death";
+        }
     }
 
     create.createTower();
@@ -95,7 +82,7 @@ module.exports.loop = function () {
     } else {
         global.builderStatus = false;
     }
-    
+
     create.createUpgrader();
     create.createTransfer();
     create.createHarvester();
@@ -113,6 +100,8 @@ module.exports.loop = function () {
             roleBuilder.run(creep);
         } else if(role == 'transfer') {
             roleTransfer.run(creep);
+        } else if(role == 'death') {
+            creep.fillStorages();
         }
         
     }
