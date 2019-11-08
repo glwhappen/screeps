@@ -15,7 +15,7 @@ var roleBuilder = {
             //var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
             var targets = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
             
-            console.log("builder:" + targets);
+            // console.log("builder:" + targets);
             //console.log("builder2:" + targets2);
             //console.log(targets);
             if(targets) {
@@ -25,7 +25,11 @@ var roleBuilder = {
                 }
             } else {
                 //console.log("builder noting");
-                creep.moveTo(Game.flags.Flag1.pos);
+
+                   creep.moveTo(Game.flags.Flag1.pos);
+
+               
+                
             }
         }
         else {

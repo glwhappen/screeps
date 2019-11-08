@@ -7,7 +7,54 @@ const mount = require('./mount')
 
 module.exports.loop = function () {
     mount();
+
+    if(!global.menuFlag){
+        global.menuFlag = true;
+
+
+        var formContent = "<table border='1' cellspacing='0'>";
+        formContent += "<tr><td>名称</td><td>id</td><td>操作</td></tr>";
+        for(var name in Memory.creeps){
+            var creep = Game.creeps[name];
+            if(creep) {
+                formContent += "<tr>";
+                formContent += "<td> " + creep.name + " </td>";
+                formContent += "<td> " + creep.id + " </td>";
+                formContent +=  "<td><button style='color:#333'>操作</button></td>"
+                formContent += "</tr>";
+            }
+        }
+        //+ "<input type='button' value='按钮'></input>"
+        //+ "<input type='button' value='按钮'></input>"
+        
+        formContent += "</table>";
+
+
+        console.log(formContent);
+    }
     
+    var containers = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES, {
+        filter: (structure) => {
+            return (structure.structureType == STRUCTURE_CONTAINER);
+        }
+    });
+    var containersUsedCapacity = 0;
+    var containersCapacity = 0;
+    for(var i in containers) {
+        containersUsedCapacity += containers[i].store.getUsedCapacity();
+        containersCapacity += containers[i].store.getCapacity()
+       // console.log(containers[i] + " " + containers[i].store.getUsedCapacity());
+    }
+    //console.log(containersUsedCapacity + " " + containersCapacity);
+    global.containersUsedPercentage = containersUsedCapacity / containersCapacity;
+    console.log(global.containersUsedPercentage);
+    if(global.containersUsedPercentage < 0.4){
+        global.speedUpgrader = 5;
+       // global.speedTower = 10;
+    } else {
+        global.speedUpgrader = 1;
+    }
+
     //Creep.prototype.tower1 = 'bea3b81e02da92d';
     Creep.prototype.mode = 3; // 1 - 初始模式，快速发展
     Creep.prototype.transferOpen = false; // 如果为true，需要设置target_id, 为upgrade使用的容器
@@ -17,61 +64,32 @@ module.exports.loop = function () {
         global.configFlag = true;
         global.speedTower = 1; // 塔发射的速度
         global.speedUpgrader = 1; // 升级的速度
-
+        
+        Memory.speed = {"tower":1, "upgrader":1};
+        Memory.hits = {"wall":40000};
     }
-    console.log("speed:" + global.speedTower);
+    console.log(Memory.speed.tower);
+    //console.log("speed:" + global.speedTower);
 
     Creep.prototype.sourcesNum = Game.spawns['Spawn1'].room.find(FIND_SOURCES).length;
     if(Creep.prototype.allhistT == undefined) Creep.prototype.allhistT = 1;
     
-    Creep.prototype.wallhist = (Game.time - 12343942); // 1M = 1000000
-
-    console.log("Wallhist:" + (Game.time - 12343942) );
-
-
-
-    var mode = Creep.prototype.mode;
-    
+    Creep.prototype.wallhist = 40232; // 1M = 1000000
 
     var sumValue = 0; // 记录当前价值的creep
     var cnt = 0;
 
-    // 清理缓存垃圾 并计算最小价值
+    // 清理缓存垃圾
     for(var name in Memory.creeps) {
-        var creep = Game.creeps[name];
         if(!Game.creeps[name]) {
             delete Memory.creeps[name];
             continue;
         } 
-        cnt++;
-        if(creep.memory.role == undefined) {
-            creep.memory.role = 'harvester';
-        }
-        if(creep.memory.role == undefined) {
-            creep.memory.role = 'harvester';
-        }
-        if(creep.memory.sourcesChoose == undefined) {
-            creep.memory.sourcesChoose = Game.time % Creep.prototype.sourcesNum;
-        }
-        sumValue += Game.creeps[name].memory.value;
     }
-    sumValue /= cnt;
-    console.log(sumValue);
-    //console.log("当前最小价值:" + minValue);
-    if(sumValue < 550) {
-        Creep.prototype.mode = 2; 
-    } else if(sumValue >= 550 && sumValue < 800) {
-        Creep.prototype.mode = 3; 
-    } else if(sumValue >= 800) {
-        Creep.prototype.mode = 3; 
-    }
-    if(Game.time % 100 == 0) {
-        console.log("当前模式" + Creep.prototype.mode);
-    }
-    
+
     create.createTower();
     
-    if(Game.spawns['Spawn1'].room.find(FIND_CONSTRUCTION_SITES) != null) {
+    if(Game.spawns['Spawn1'].room.find(FIND_CONSTRUCTION_SITES).length != 0) {
         global.builderStatus = true;
         create.createBuilder();
     } else {
@@ -88,7 +106,7 @@ module.exports.loop = function () {
         if(role == 'harvester') {
             roleHarvester.run(creep);
         } else if(role == 'upgrader') {
-            if(Game.time % global.speedUpgrader  == 0){
+            if(Game.time % Memory.speed.upgrader  == 0){
                 roleUpgrader.run(creep);
             }
         } else if(role == 'builder') {

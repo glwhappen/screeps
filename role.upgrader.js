@@ -16,7 +16,7 @@ var roleUpgrader = {
         }
         else {
             if(!creep.getEnergyFromContainer()){
-                creep.getEnergyFromStorages();
+                //creep.getEnergyFromStorages();
                 //creep.getEnergyFromSources();
             }
         }

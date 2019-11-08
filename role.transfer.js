@@ -11,19 +11,24 @@ var roleTransfer = {
         }
         //console.log(Creep.prototype.target_id);
         if(!creep.memory.transfing) {
-            creep.getEnergyFromContainer(Creep.prototype.target_id);
+            if(global.containersUsedPercentage < 0.3) {
+                creep.getEnergyFromStorages();
+            } else {
+                creep.getEnergyFromContainer(Creep.prototype.target_id);
+            }
         }
         else {
             if(!creep.fillSpawnEngry()) {
                 if(!creep.fillTower()){
                     if(!creep.fillStructureById(Creep.prototype.target_id)){
-                        if(!creep.fillStorages()) {
+                        if(global.containersUsedPercentage > 0.7 && !creep.fillStorages()) {
 
+                        } else {
+                            creep.moveTo(Game.flags.Flag1.pos);
                         }
                     }
                 }
             }
-            
         }
             
     }

@@ -16,7 +16,11 @@ var roleHarvester = {
         else {
 
             if(!creep.fillContainer(Creep.prototype.target_id)) {
-                //creep.fillStorages();
+                if(!creep.fillSpawnEngry()) {
+                    if(global.containersUsedPercentage > 0.7 && !creep.fillStorages()) {
+                        
+                    }
+                }
             }
         }
     }

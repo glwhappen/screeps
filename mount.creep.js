@@ -64,7 +64,7 @@ const creepExtension = {
     },
     // 填充所有 container
     fillContainer(except) {
-        console.log(except);
+        // console.log(except);
         this.say("填充containers");
         var targets = this.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => {
